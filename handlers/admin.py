@@ -19,7 +19,7 @@ async def update_bot(message: types.Message):
 
     try:
         # Обновление из GitHub
-        subprocess.run(["git", "pull"], cwd="/bot_7dtd_tg", check=True)
+        subprocess.run(["git", "pull"], cwd="root/bot_7dtd_tg", check=True)
 
         # Перезапуск systemd-сервиса
         subprocess.run(["systemctl", "restart", "bot_7dtd_tg.service"], check=True)

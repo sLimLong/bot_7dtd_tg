@@ -1,18 +1,16 @@
 import subprocess
 import os
+import asyncio
 from aiogram import types, Dispatcher
 from aiogram.filters import Command
 
-# ✅ Список Telegram ID, которым разрешено обновление
 ALLOWED_ADMINS = {
     297211090  # sLim
 }
 
-# 🔧 Настройки
 REPO_PATH = "/root/bot_7dtd_tg"
 SERVICE_NAME = "bot_7dtd_tg.service"
 
-# 🔄 Команда /update — только для разрешённых ID
 async def update_bot(message: types.Message):
     user_id = message.from_user.id
 
@@ -25,13 +23,9 @@ async def update_bot(message: types.Message):
     await message.reply("🔄 Сохраняю изменения и обновляю из GitHub...")
 
     try:
-        # Сохраняем локальные изменения
         subprocess.run(["git", "stash", "push", "-m", "Auto stash before update"], cwd=REPO_PATH, check=True)
-
-        # Обновление из GitHub
         subprocess.run(["git", "pull"], cwd=REPO_PATH, check=True)
 
-        # Попытка вернуть изменения
         try:
             subprocess.run(["git", "stash", "pop"], cwd=REPO_PATH, check=True)
         except subprocess.CalledProcessError:
@@ -41,15 +35,19 @@ async def update_bot(message: types.Message):
                 "`git stash list`\n", parse_mode="Markdown"
             )
 
-        # Перезапуск systemd-сервиса
-        subprocess.run(["systemctl", "restart", SERVICE_NAME], check=True)
+        await message.reply("✅ Обновление завершено. Перезапускаю бот через systemd...")
 
-        await message.reply("✅ Бот успешно обновлён и перезапущен.")
+        # ⏳ Отложенный перезапуск, чтобы успеть отправить сообщение
+        asyncio.create_task(delayed_restart())
+
     except subprocess.CalledProcessError as e:
         await message.reply(f"❌ Ошибка при выполнении команды:\n```\n{e}\n```", parse_mode="Markdown")
     except Exception as e:
         await message.reply(f"❌ Непредвиденная ошибка:\n```\n{e}\n```", parse_mode="Markdown")
 
-# 📌 Регистрация команды
+async def delayed_restart():
+    await asyncio.sleep(2)  # Дать время на отправку сообщения
+    subprocess.run(["systemctl", "restart", SERVICE_NAME], check=True)
+
 def register_admin(dp: Dispatcher):
     dp.message.register(update_bot, Command("update"))

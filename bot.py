@@ -1,7 +1,7 @@
 import asyncio
 from aiogram import Bot, Dispatcher
 from config import BOT_TOKEN
-from handlers import base, stats, admin, antispam, trust
+from handlers import base, stats, admin, antispam
 
 async def main():
     bot = Bot(BOT_TOKEN)
@@ -11,7 +11,6 @@ async def main():
     stats.register_stats(dp)
     admin.register_admin(dp)
     antispam.register_antispam(dp)
-    trust.register_trust(dp)  # ✅ доверие
 
     await dp.start_polling(bot)
 

@@ -1,6 +1,7 @@
 from aiogram import Dispatcher, types
 from aiogram.filters import Command
 from trust.tracker import is_trusted, get_trusted_users, user_trust
+from datetime import datetime  # ✅ добавлено
 
 def register_trust(dp: Dispatcher):
     @dp.message(Command("respect"))

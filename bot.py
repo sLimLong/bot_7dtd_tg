@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher
 from config import BOT_TOKEN
 from handlers import base, stats, admin
 from middlewares.activity_tracker import ActivityTrackerMiddleware
-from middlewares.group_antispam import GroupAntiSpamMiddleware  # 👈 добавлено
+from middlewares.gif_emoji_antispam import GifEmojiAntiSpamMiddleware  # 👈 заменили
 
 async def main():
     bot = Bot(BOT_TOKEN)
@@ -11,7 +11,12 @@ async def main():
 
     # 🧠 Подключаем middlewares
     dp.message.middleware(ActivityTrackerMiddleware())
-    dp.message.middleware(GroupAntiSpamMiddleware(cooldown_seconds=3, notify=True))  # 👈 защита от спама
+    dp.message.middleware(GifEmojiAntiSpamMiddleware(
+        gif_cooldown=10,
+        emoji_limit=5,
+        emoji_cooldown=10,
+        notify=True
+    ))
 
     # 📦 Регистрируем хендлеры
     base.register_base(dp)

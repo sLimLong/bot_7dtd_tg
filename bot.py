@@ -1,7 +1,6 @@
 import asyncio
 from aiogram import Bot, Dispatcher
 from config import BOT_TOKEN
-from handlers import base, stats, admin
 from handlers import base, stats, admin, antispam, trust
 
 async def main():

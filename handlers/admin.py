@@ -21,12 +21,17 @@ async def update_bot(message: types.Message):
     await message.reply("🔄 Обновление из GitHub и перезапуск...")
 
     try:
-        subprocess.run(["git", "pull"], cwd="/home/slim/bots/bot_7dtd", check=True)
-        subprocess.run(["pkill", "-f", "bot.py"], check=True)
-        subprocess.Popen(["nohup", "python3", "bot.py"], cwd="/home/slim/bots/bot_7dtd")
+        # Обновление из GitHub
+        subprocess.run(["git", "pull"], cwd="/bot_7dtd_tg", check=True)
+
+        # Перезапуск через run_bot.sh
+        subprocess.run(["bash", "run_bot.sh"], cwd="/bot_7dtd_tg", check=True)
+
         await message.reply("✅ Бот обновлён и перезапущен.")
-    except Exception as e:
+    except subprocess.CalledProcessError as e:
         await message.reply(f"❌ Ошибка при обновлении: {e}")
+    except Exception as e:
+        await message.reply(f"❌ Непредвиденная ошибка: {e}")
 
 # 📌 Регистрация
 def register_admin(dp: Dispatcher):

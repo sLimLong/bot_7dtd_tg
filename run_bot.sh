@@ -1,7 +1,8 @@
 #!/bin/bash
 
-cd /home/slim/bots/bot_7dtd
-source ~/.bashrc
+cd /bot_7dtd_tg
 
-echo "🚀 Запуск Telegram-бота..."
+echo "🚀 Перезапуск Telegram-бота..."
+pkill -f bot.py
+sleep 2
 nohup python3 bot.py > logs.txt 2>&1 &

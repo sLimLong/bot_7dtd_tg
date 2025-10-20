@@ -3,6 +3,7 @@ from aiogram import Bot, Dispatcher
 from config import BOT_TOKEN
 from handlers import base, stats
 from middlewares.activity_tracker import ActivityTrackerMiddleware
+from handlers import admin
 
 async def main():
     bot = Bot(BOT_TOKEN)
@@ -12,6 +13,7 @@ async def main():
 
     base.register_base(dp)
     stats.register_stats(dp)
+    admin.register_admin(dp)
 
     await dp.start_polling(bot)
 
